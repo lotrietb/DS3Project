@@ -6,7 +6,16 @@
 
 package classes.services;
 
+import classes.db.DB_connection;
+import java.sql.CallableStatement;
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JOptionPane;
+import oracle.jdbc.OracleTypes;
 
 /**
  *
@@ -20,6 +29,98 @@ class Appointment {
     private int patient_id;
 
     public Appointment() {
+    }
+    
+    private Connection connect_to_db()
+    {
+        return DB_connection.instance();
+    }
+    
+    public void create_appointment(Appointment ap)
+    {
+        try {
+            Connection conn = connect_to_db();
+            CallableStatement cs = conn.prepareCall( "DECLARE BEGIN APPOINTMENTS.CREATE_APPOINTMENT( P_DATE_TIME => ?, P_REASON => ?, P_DOCTOR_ID => ?, P_PATIENT_ID => ? ); END;" );
+          
+            cs.setDate(1, ap.getDate_time());
+            cs.setString(2, ap.getReason());
+            cs.setInt(3, ap.getDoctor_id());
+            cs.setInt(4, ap.getPatient_id());
+            cs.execute();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "An error occured while creating the appointment. Please try again.");            
+        }
+    }
+    
+    public List<Appointment> all_appointments()
+    {
+        try {
+            Connection conn = connect_to_db();
+            
+            if(conn == null)
+                return null;
+            CallableStatement cs = conn.prepareCall( "begin ? := appointments.get_all_appointments(); end;" );
+            
+            cs.registerOutParameter(1, OracleTypes.CURSOR);
+            cs.execute();
+            
+            ResultSet rs = (ResultSet)cs.getObject(1);
+            
+            List<Appointment> ap_list = new ArrayList<Appointment>();
+            int count = 0;
+            while(rs.next())
+            {
+                Appointment ap = new Appointment();
+                ap.setId(rs.getInt("id"));
+                ap.setDate_time(rs.getDate("date_time"));
+                ap.setDoctor_id(rs.getInt("doctor_id"));
+                ap.setPatient_id(rs.getInt("patient_id"));
+                ap.setReason(rs.getString("reason"));
+                ap_list.add(count, ap);
+                count++;
+            }
+            return ap_list;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "An error occured when fetching the data. Please try again.");
+            return null;
+        }
+    }
+    
+    public List<Appointment> todays_appointments()
+    {
+        try {
+            Connection conn = connect_to_db();
+            
+            if(conn == null)
+                return null;
+            CallableStatement cs = conn.prepareCall( "begin ? := appointments.get_all_todays_appointments(); end;" );
+            
+            cs.registerOutParameter(1, OracleTypes.CURSOR);
+            cs.execute();
+            
+            ResultSet rs = (ResultSet)cs.getObject(1);
+            
+            List<Appointment> ap_list = new ArrayList<Appointment>();
+            int count = 0;
+            while(rs.next())
+            {
+                Appointment ap = new Appointment();
+                ap.setId(rs.getInt("id"));
+                ap.setDate_time(rs.getDate("date_time"));
+                ap.setDoctor_id(rs.getInt("doctor_id"));
+                ap.setPatient_id(rs.getInt("patient_id"));
+                ap.setReason(rs.getString("reason"));
+                ap_list.add(count, ap);
+                count++;
+            }
+            return ap_list;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "An error occured when fetching the data. Please try again.");
+            return null;
+        }
     }
 
     public int getId() {

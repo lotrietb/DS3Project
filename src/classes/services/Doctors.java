@@ -34,6 +34,22 @@ public class Doctors {
         return DB_connection.instance();
     }
     
+    public void create_Doctor(Doctors doc)
+    {
+        try {
+            Connection conn = connect_to_db();
+            
+            CallableStatement cs = conn.prepareCall("DECLARE P_NAME VARCHAR2(200); P_SURNAME VARCHAR2(200); BEGIN P_NAME := ?; P_SURNAME := ?; DOCTORS.CREATE_DOCTOR(P_NAME => P_NAME,P_SURNAME => P_SURNAME);END;" );
+            cs.setString(1,doc.getName());
+            cs.setString(2,doc.getSurname());
+            
+            cs.execute();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "An error occured while creating the doctor. Please try again.");            
+        }
+    }
+    
     /*
         Ran, tested, working.
         Requires doctor_id
@@ -67,7 +83,6 @@ public class Doctors {
             }
             return ap_list;
         } catch (SQLException ex) {
-                ex.printStackTrace();
             JOptionPane.showMessageDialog(null, "An error occured when fetching the data. Please try again.");
             return null;
         }
