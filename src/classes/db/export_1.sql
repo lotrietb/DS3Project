@@ -1,11 +1,12 @@
 --------------------------------------------------------
---  File created - Saturday-May-31-2014   
+--  File created - Sunday-June-01-2014   
 --------------------------------------------------------
-  DROP TABLE "HOSPITAL"."ACTIVITY_AUDIT" cascade constraints;
-  DROP TABLE "HOSPITAL"."APPOINTMENT" cascade constraints;
-  DROP TABLE "HOSPITAL"."DOCTOR" cascade constraints;
-  DROP TABLE "HOSPITAL"."PATIENT" cascade constraints;
-  DROP TABLE "HOSPITAL"."PAYMENT" cascade constraints;
+  DROP TABLE "HOSPITAL"."ACTIVITY_AUDIT";
+  DROP TABLE "HOSPITAL"."APPOINTMENT";
+  DROP TABLE "HOSPITAL"."APPOINTMENT_STATUS";
+  DROP TABLE "HOSPITAL"."DOCTOR";
+  DROP TABLE "HOSPITAL"."PATIENT";
+  DROP TABLE "HOSPITAL"."PAYMENT";
   DROP SEQUENCE "HOSPITAL"."APPOINTMENT_SEQ";
   DROP SEQUENCE "HOSPITAL"."DOCTOR_SEQ";
   DROP SEQUENCE "HOSPITAL"."PATIENT_SEQ";
@@ -50,7 +51,19 @@
 	"DATE_TIME" TIMESTAMP (6), 
 	"REASON" VARCHAR2(150 BYTE), 
 	"DOCTOR_ID" NUMBER, 
-	"PATIENT_ID" NUMBER
+	"PATIENT_ID" NUMBER, 
+	"APPOINTMENT_STATUS_ID" NUMBER
+   ) PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)
+  TABLESPACE "USERS" ;
+--------------------------------------------------------
+--  DDL for Table APPOINTMENT_STATUS
+--------------------------------------------------------
+
+  CREATE TABLE "HOSPITAL"."APPOINTMENT_STATUS" 
+   (	"ID" NUMBER, 
+	"STATUS" VARCHAR2(50 BYTE)
    ) PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING
   STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
   PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)
@@ -96,12 +109,16 @@
   TABLESPACE "USERS" ;
 REM INSERTING into HOSPITAL.ACTIVITY_AUDIT
 REM INSERTING into HOSPITAL.APPOINTMENT
-Insert into HOSPITAL.APPOINTMENT (ID,DATE_TIME,REASON,DOCTOR_ID,PATIENT_ID) values (1,to_timestamp('31-MAY-14 02.30.54.793000000 PM','DD-MON-RR HH.MI.SS.FF AM'),'Eye Test',5,1);
-Insert into HOSPITAL.APPOINTMENT (ID,DATE_TIME,REASON,DOCTOR_ID,PATIENT_ID) values (2,to_timestamp('29-JUN-14 11.15.30.167000000 PM','DD-MON-RR HH.MI.SS.FF AM'),'Colonoscopy',4,2);
-Insert into HOSPITAL.APPOINTMENT (ID,DATE_TIME,REASON,DOCTOR_ID,PATIENT_ID) values (24,to_timestamp('31-MAY-14 03.36.21.460000000 PM','DD-MON-RR HH.MI.SS.FF AM'),'Monthly checkup.',4,2);
-Insert into HOSPITAL.APPOINTMENT (ID,DATE_TIME,REASON,DOCTOR_ID,PATIENT_ID) values (25,to_timestamp('31-MAY-14 03.37.18.007000000 PM','DD-MON-RR HH.MI.SS.FF AM'),'Monthly checkup.',4,2);
-Insert into HOSPITAL.APPOINTMENT (ID,DATE_TIME,REASON,DOCTOR_ID,PATIENT_ID) values (28,to_timestamp('31-MAY-14 12.00.00.000000000 AM','DD-MON-RR HH.MI.SS.FF AM'),'sjfndsf',5,22);
-Insert into HOSPITAL.APPOINTMENT (ID,DATE_TIME,REASON,DOCTOR_ID,PATIENT_ID) values (29,to_timestamp('24-SEP-14 12.00.00.000000000 AM','DD-MON-RR HH.MI.SS.FF AM'),'Tired of thinking, my head hurts',7,3);
+Insert into HOSPITAL.APPOINTMENT (ID,DATE_TIME,REASON,DOCTOR_ID,PATIENT_ID,APPOINTMENT_STATUS_ID) values (1,to_timestamp('31-MAY-14 02.30.54.793000000 PM','DD-MON-RR HH.MI.SS.FF AM'),'Eye Test',5,1,1);
+Insert into HOSPITAL.APPOINTMENT (ID,DATE_TIME,REASON,DOCTOR_ID,PATIENT_ID,APPOINTMENT_STATUS_ID) values (2,to_timestamp('29-JUN-14 11.15.30.167000000 PM','DD-MON-RR HH.MI.SS.FF AM'),'Colonoscopy',4,2,2);
+Insert into HOSPITAL.APPOINTMENT (ID,DATE_TIME,REASON,DOCTOR_ID,PATIENT_ID,APPOINTMENT_STATUS_ID) values (24,to_timestamp('31-MAY-14 03.36.21.460000000 PM','DD-MON-RR HH.MI.SS.FF AM'),'Monthly checkup.',4,2,3);
+Insert into HOSPITAL.APPOINTMENT (ID,DATE_TIME,REASON,DOCTOR_ID,PATIENT_ID,APPOINTMENT_STATUS_ID) values (25,to_timestamp('31-MAY-14 03.37.18.007000000 PM','DD-MON-RR HH.MI.SS.FF AM'),'Monthly checkup.',4,2,1);
+Insert into HOSPITAL.APPOINTMENT (ID,DATE_TIME,REASON,DOCTOR_ID,PATIENT_ID,APPOINTMENT_STATUS_ID) values (28,to_timestamp('31-MAY-14 12.00.00.000000000 AM','DD-MON-RR HH.MI.SS.FF AM'),'sjfndsf',5,22,1);
+Insert into HOSPITAL.APPOINTMENT (ID,DATE_TIME,REASON,DOCTOR_ID,PATIENT_ID,APPOINTMENT_STATUS_ID) values (29,to_timestamp('24-SEP-14 12.00.00.000000000 AM','DD-MON-RR HH.MI.SS.FF AM'),'Tired of thinking, my head hurts',7,3,1);
+REM INSERTING into HOSPITAL.APPOINTMENT_STATUS
+Insert into HOSPITAL.APPOINTMENT_STATUS (ID,STATUS) values (1,'Incomplete');
+Insert into HOSPITAL.APPOINTMENT_STATUS (ID,STATUS) values (2,'Consultation started');
+Insert into HOSPITAL.APPOINTMENT_STATUS (ID,STATUS) values (3,'Complete');
 REM INSERTING into HOSPITAL.DOCTOR
 Insert into HOSPITAL.DOCTOR (ID,NAME,SURNAME,IS_AVAILABLE) values (4,'Clive ','Evertse',1);
 Insert into HOSPITAL.DOCTOR (ID,NAME,SURNAME,IS_AVAILABLE) values (5,'Brandon','Lotriet',1);
@@ -115,11 +132,24 @@ Insert into HOSPITAL.DOCTOR (ID,NAME,SURNAME,IS_AVAILABLE) values (25,null,null,
 Insert into HOSPITAL.DOCTOR (ID,NAME,SURNAME,IS_AVAILABLE) values (26,'Johannes','Burger',1);
 Insert into HOSPITAL.DOCTOR (ID,NAME,SURNAME,IS_AVAILABLE) values (27,'Johannes','Birger',1);
 REM INSERTING into HOSPITAL.PATIENT
-Insert into HOSPITAL.PATIENT (ID,NAME,SURNAME,ADDRESS,CITY,ID_NUMBER) values (1,'Yandiswa','Makanda','5 Street address','Cape Town',null);
-Insert into HOSPITAL.PATIENT (ID,NAME,SURNAME,ADDRESS,CITY,ID_NUMBER) values (2,'Deen','Hans','9 Street Address','Cape Town',null);
-Insert into HOSPITAL.PATIENT (ID,NAME,SURNAME,ADDRESS,CITY,ID_NUMBER) values (3,'Dean','VanNiekerk','7 Street address, Plain','Cape Town',null);
+Insert into HOSPITAL.PATIENT (ID,NAME,SURNAME,ADDRESS,CITY,ID_NUMBER) values (1,'Yandiswa','Makanda','5 Street address','Cape Town','9207255288088');
+Insert into HOSPITAL.PATIENT (ID,NAME,SURNAME,ADDRESS,CITY,ID_NUMBER) values (2,'Deen','Hans','9 Street Address','Cape Town','5858585858585');
+Insert into HOSPITAL.PATIENT (ID,NAME,SURNAME,ADDRESS,CITY,ID_NUMBER) values (3,'Dean','VanNiekerk','7 Street address, Plain','Cape Town','6547965478965');
 Insert into HOSPITAL.PATIENT (ID,NAME,SURNAME,ADDRESS,CITY,ID_NUMBER) values (22,'Joe','Doe','4 Church Street','Cape Town','8456254422366');
 Insert into HOSPITAL.PATIENT (ID,NAME,SURNAME,ADDRESS,CITY,ID_NUMBER) values (23,'Joe','Doe','4 Church Street','Cape Town','8456254422366');
+Insert into HOSPITAL.PATIENT (ID,NAME,SURNAME,ADDRESS,CITY,ID_NUMBER) values (24,'Clive-Marcus','Evertse','Birdwood street','Cape Town','1234567898745');
+Insert into HOSPITAL.PATIENT (ID,NAME,SURNAME,ADDRESS,CITY,ID_NUMBER) values (25,'Clive-Marcus','Evertse','Birdwood street','Cape Town','1234567898745');
+Insert into HOSPITAL.PATIENT (ID,NAME,SURNAME,ADDRESS,CITY,ID_NUMBER) values (26,'Clive-Marcus','Evertse','Birdwood street','Cape Town','1234567898745');
+Insert into HOSPITAL.PATIENT (ID,NAME,SURNAME,ADDRESS,CITY,ID_NUMBER) values (27,'Clive-Marcus','Evertse','Birdwood street','Cape Town','1234567898745');
+Insert into HOSPITAL.PATIENT (ID,NAME,SURNAME,ADDRESS,CITY,ID_NUMBER) values (28,'Clive-Marcus','Evertse','Birdwood street','Cape Town','1234567898745');
+Insert into HOSPITAL.PATIENT (ID,NAME,SURNAME,ADDRESS,CITY,ID_NUMBER) values (29,'Clive-Marcus','Evertse','Birdwood street','Cape Town','1234567898745');
+Insert into HOSPITAL.PATIENT (ID,NAME,SURNAME,ADDRESS,CITY,ID_NUMBER) values (30,'Clive-Marcus','Evertse','Birdwood street','Cape Town','1234567898745');
+Insert into HOSPITAL.PATIENT (ID,NAME,SURNAME,ADDRESS,CITY,ID_NUMBER) values (31,'Clive-Marcus','Evertse','Birdwood street','Cape Town','1234567898745');
+Insert into HOSPITAL.PATIENT (ID,NAME,SURNAME,ADDRESS,CITY,ID_NUMBER) values (32,'Clive-Marcus','Evertse','Birdwood street','Cape Town','1234567898745');
+Insert into HOSPITAL.PATIENT (ID,NAME,SURNAME,ADDRESS,CITY,ID_NUMBER) values (34,'Clive-Marcus','Evertse','Birdwood street','Cape Town','1234567898745');
+Insert into HOSPITAL.PATIENT (ID,NAME,SURNAME,ADDRESS,CITY,ID_NUMBER) values (35,'Clive-Marcus','Evertse','Birdwood street','Cape Town','1234567898745');
+Insert into HOSPITAL.PATIENT (ID,NAME,SURNAME,ADDRESS,CITY,ID_NUMBER) values (36,'Clive-Marcus','Evertse','Birdwood street','Cape Town','1234567898745');
+Insert into HOSPITAL.PATIENT (ID,NAME,SURNAME,ADDRESS,CITY,ID_NUMBER) values (33,'Clive-Marcus','Evertse','Birdwood street','Cape Town','1234567898745');
 REM INSERTING into HOSPITAL.PAYMENT
 Insert into HOSPITAL.PAYMENT (APPOINTMENT_ID,AMOUNT) values (1,200);
 Insert into HOSPITAL.PAYMENT (APPOINTMENT_ID,AMOUNT) values (1,200);
@@ -139,6 +169,24 @@ Insert into HOSPITAL.PAYMENT (APPOINTMENT_ID,AMOUNT) values (1,271.62);
   PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)
   TABLESPACE "USERS" ;
 --------------------------------------------------------
+--  DDL for Index TABLE1_PK
+--------------------------------------------------------
+
+  CREATE UNIQUE INDEX "HOSPITAL"."TABLE1_PK" ON "HOSPITAL"."APPOINTMENT" ("ID") 
+  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)
+  TABLESPACE "USERS" ;
+--------------------------------------------------------
+--  DDL for Index APPOINTMENT_STATUS_PK
+--------------------------------------------------------
+
+  CREATE UNIQUE INDEX "HOSPITAL"."APPOINTMENT_STATUS_PK" ON "HOSPITAL"."APPOINTMENT_STATUS" ("ID") 
+  PCTFREE 10 INITRANS 2 MAXTRANS 255 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)
+  TABLESPACE "USERS" ;
+--------------------------------------------------------
 --  DDL for Index DOCTOR_PK
 --------------------------------------------------------
 
@@ -148,14 +196,16 @@ Insert into HOSPITAL.PAYMENT (APPOINTMENT_ID,AMOUNT) values (1,271.62);
   PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)
   TABLESPACE "USERS" ;
 --------------------------------------------------------
---  DDL for Index TABLE1_PK
+--  Constraints for Table APPOINTMENT_STATUS
 --------------------------------------------------------
 
-  CREATE UNIQUE INDEX "HOSPITAL"."TABLE1_PK" ON "HOSPITAL"."APPOINTMENT" ("ID") 
-  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  ALTER TABLE "HOSPITAL"."APPOINTMENT_STATUS" ADD CONSTRAINT "APPOINTMENT_STATUS_PK" PRIMARY KEY ("ID")
+  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 
   STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
   PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)
-  TABLESPACE "USERS" ;
+  TABLESPACE "USERS"  ENABLE;
+ 
+  ALTER TABLE "HOSPITAL"."APPOINTMENT_STATUS" MODIFY ("ID" NOT NULL ENABLE);
 --------------------------------------------------------
 --  Constraints for Table APPOINTMENT
 --------------------------------------------------------
@@ -193,11 +243,20 @@ Insert into HOSPITAL.PAYMENT (APPOINTMENT_ID,AMOUNT) values (1,271.62);
 --  Ref Constraints for Table APPOINTMENT
 --------------------------------------------------------
 
+  ALTER TABLE "HOSPITAL"."APPOINTMENT" ADD CONSTRAINT "APPOINTMENT_STATUS_FK1" FOREIGN KEY ("APPOINTMENT_STATUS_ID")
+	  REFERENCES "HOSPITAL"."APPOINTMENT_STATUS" ("ID") ENABLE;
+ 
   ALTER TABLE "HOSPITAL"."APPOINTMENT" ADD CONSTRAINT "DOCTOR_FK" FOREIGN KEY ("DOCTOR_ID")
 	  REFERENCES "HOSPITAL"."DOCTOR" ("ID") ON DELETE CASCADE ENABLE;
  
   ALTER TABLE "HOSPITAL"."APPOINTMENT" ADD CONSTRAINT "PATIENT_FK" FOREIGN KEY ("PATIENT_ID")
 	  REFERENCES "HOSPITAL"."PATIENT" ("ID") ON DELETE CASCADE ENABLE;
+--------------------------------------------------------
+--  Ref Constraints for Table PAYMENT
+--------------------------------------------------------
+
+  ALTER TABLE "HOSPITAL"."PAYMENT" ADD CONSTRAINT "APPOINTMENT_FK1" FOREIGN KEY ("APPOINTMENT_ID")
+	  REFERENCES "HOSPITAL"."APPOINTMENT" ("ID") ON DELETE CASCADE ENABLE;
 --------------------------------------------------------
 --  DDL for Trigger APP_TRG
 --------------------------------------------------------
@@ -259,6 +318,9 @@ ALTER TRIGGER "HOSPITAL"."PAY_FOR_APPOINTMENT" ENABLE;
   CREATE OR REPLACE PACKAGE "HOSPITAL"."APPOINTMENTS" As
 
 procedure create_appointment(p_date_time varchar2, p_reason varchar2, p_doctor_id NUMBER, p_patient_id NUMBER);
+procedure set_status(p_appointment_id NUMBER, p_new_status NUMBER);
+
+function get_according_to_status(p_status_id NUMBER) return sys_refcursor;
 function get_all_appointments return sys_refcursor;
 function get_all_todays_appointments return sys_refcursor;
 
@@ -288,7 +350,7 @@ END;
   CREATE OR REPLACE PACKAGE "HOSPITAL"."PATIENTS" AS
 
 procedure create_patient(p_name varchar2, p_surname varchar2,p_address varchar2,p_city varchar2, p_id_number varchar2);
-function get_patient_appointments(p_patient_id_number number) return sys_refcursor;
+function get_patient_appointments(p_patient_id_number varchar2) return sys_refcursor;
 function get_patient_monthly_owing(p_patient_id number) return NUMBER;
 
 END;
@@ -303,8 +365,22 @@ END;
 
 procedure create_appointment(p_date_time varchar2, p_reason varchar2, p_doctor_id NUMBER, p_patient_id NUMBER) AS
 BEGIN
-    INSERT INTO appointment(date_time, reason, doctor_id, patient_id) VALUES(p_date_time, p_reason, p_doctor_id, p_patient_id);
+    INSERT INTO appointment(date_time, reason, doctor_id, patient_id,appointment_status_id) VALUES(p_date_time, p_reason, p_doctor_id, p_patient_id,1);
 END create_appointment;
+
+procedure set_status(p_appointment_id NUMBER, p_new_status NUMBER) AS
+BEGIN
+    UPDATE appointment ap SET ap.appointment_status_id = p_new_status WHERE id = p_appointment_id;      
+END set_status;
+
+function get_according_to_status(p_status_id NUMBER) return sys_refcursor AS
+appointments sys_refcursor;
+BEGIN
+     OPEN appointments FOR SELECT * FROM appointment WHERE appointment_status_id = p_status_id;
+  
+     return appointments;
+END get_according_to_status;
+
 
 function get_all_appointments return sys_refcursor AS
 all_appointments sys_refcursor;
@@ -385,12 +461,12 @@ BEGIN
     VALUES(p_name, p_surname,p_address,p_city,p_id_number);
 END create_patient;
 
-function get_patient_appointments(p_patient_id_number number) return sys_refcursor AS
+function get_patient_appointments(p_patient_id_number varchar2) return sys_refcursor AS
 patient_appointments sys_refcursor;
-v_temp_id_number varchar2(20);
+v_temp_id varchar2(20);
 BEGIN
-  SELECT id_number INTO v_temp_id_number FROM patient WHERE id_number = p_patient_id_number;
-  OPEN patient_appointments FOR SELECT * FROM appointment a WHERE a.patient_id = v_temp_id_number;
+  SELECT id INTO v_temp_id FROM patient WHERE id_number = p_patient_id_number;
+  OPEN patient_appointments FOR SELECT * FROM appointment a WHERE a.patient_id = v_temp_id;
   return patient_appointments;
   
 END get_patient_appointments;

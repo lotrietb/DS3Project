@@ -20,13 +20,40 @@ import oracle.jdbc.OracleTypes;
  *
  * @author Brandon1
  */
-public class Doctors {
+public class Patient {
     private int id;
     private String name;
     private String surname;
-    private int is_available;
+    private String address;
+    private String city;
+    private String id_number;
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getId_number() {
+        return id_number;
+    }
+
+    public void setId_number(String id_number) {
+        this.id_number = id_number;
+    }
     
-    public Doctors() {
+    public Patient() {
     }
     
     private Connection connect_to_db()
@@ -34,14 +61,17 @@ public class Doctors {
         return DB_connection.instance();
     }
     
-    public void create_Doctor(Doctors doc)
+    public void create_patient(Patient pat)
     {
         try {
             Connection conn = connect_to_db();
             
-            CallableStatement cs = conn.prepareCall("DECLARE P_NAME VARCHAR2(200); P_SURNAME VARCHAR2(200); BEGIN P_NAME := ?; P_SURNAME := ?; DOCTORS.CREATE_DOCTOR(P_NAME => P_NAME,P_SURNAME => P_SURNAME);END;" );
-            cs.setString(1,doc.getName());
-            cs.setString(2,doc.getSurname());
+            CallableStatement cs = conn.prepareCall("begin patients.create_patient(?,?,?,?,?); end;" );
+            cs.setString(1,pat.getName());
+            cs.setString(2,pat.getSurname());
+            cs.setString(3,pat.getAddress());
+            cs.setString(4,pat.getCity());
+            cs.setString(5,pat.getId_number());
             
             cs.execute();
         } catch (SQLException ex) {
@@ -54,15 +84,15 @@ public class Doctors {
         Ran, tested, working.
         Requires doctor_id
     */
-    public List<Appointment> get_appointments(int doctor_id)
+    public List<Appointment> get_appointments(String patient_id)
     {
         try {
             Connection conn = connect_to_db();
             
             if(conn == null)
                 return null;
-            CallableStatement cs = conn.prepareCall( "begin ? := doctors.get_doctor_appointments(?); end;" );
-            cs.setInt(2, doctor_id);
+            CallableStatement cs = conn.prepareCall( "begin ? := patients.get_patient_appointments(?); end;" );
+            cs.setString(2, patient_id);
             cs.registerOutParameter(1, OracleTypes.CURSOR);
             cs.execute();
             
@@ -84,19 +114,20 @@ public class Doctors {
             }
             return ap_list;
         } catch (SQLException ex) {
+            ex.printStackTrace();
             JOptionPane.showMessageDialog(null, "An error occured when fetching the data. Please try again.");
             return null;
         }
     }
     
-    public int monthly_earnings(int doctor_id)
+    public int monthly_owing(int patient_id)
     {
         
         try {
             Connection conn = connect_to_db();
             
-            CallableStatement cs = conn.prepareCall( "begin ? := doctors.get_doctor_monthly_earnings(?); end;" );
-            cs.setInt(2, doctor_id);
+            CallableStatement cs = conn.prepareCall( "begin ? := patients.get_patient_monthly_owing(?); end;" );
+            cs.setInt(2, patient_id);
             cs.registerOutParameter(1, OracleTypes.NUMBER);
             cs.execute();
             
@@ -105,38 +136,6 @@ public class Doctors {
             JOptionPane.showMessageDialog(null, "An error occured when fetching the data. Please try again.");
         }
         return 0;
-    }
-    
-    public List<Doctors> available_doctors()
-    {
-        try {
-            Connection conn = connect_to_db();
-            
-            if(conn == null)
-                return null;
-            CallableStatement cs = conn.prepareCall( "begin ? := doctors.get_available_doctors(); end;" );
-            cs.registerOutParameter(1, OracleTypes.CURSOR);
-            cs.execute();
-            
-            ResultSet rs = (ResultSet)cs.getObject(1);
-            
-            List<Doctors> doc_list = new ArrayList<Doctors>();
-            while(rs.next())
-            {
-                Doctors doc = new Doctors();
-                doc.setId(rs.getInt("id"));
-                doc.setIs_available(rs.getInt("is_available"));
-                doc.setName(rs.getString("name"));
-                doc.setSurname(rs.getString("surname"));
-                     
-                doc_list.add(doc);
-            }
-            return doc_list;
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(null, "An error occured when fetching the data. Please try again.");
-            return null;
-        }
     }
 
     public int getId() {
@@ -161,14 +160,6 @@ public class Doctors {
 
     public void setSurname(String surname) {
         this.surname = surname;
-    }
-
-    public int getIs_available() {
-        return is_available;
-    }
-
-    public void setIs_available(int is_available) {
-        this.is_available = is_available;
     }
             
     

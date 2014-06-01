@@ -27,6 +27,15 @@ class Appointment {
     private String reason;
     private int doctor_id;
     private int patient_id;
+    private int appointment_status_id;
+
+    public int getAppointment_status_id() {
+        return appointment_status_id;
+    }
+
+    public void setAppointment_status_id(int appointment_status_id) {
+        this.appointment_status_id = appointment_status_id;
+    }
 
     public Appointment() {
     }
@@ -34,6 +43,60 @@ class Appointment {
     private Connection connect_to_db()
     {
         return DB_connection.instance();
+    }
+    
+    
+    
+    public void set_status(int appointment_id, int new_status)
+    {
+        try {
+            Connection conn = connect_to_db();
+            
+            CallableStatement cs = conn.prepareCall( "begin appointments.set_status(?,?); end;" );
+            cs.setInt(2, new_status);
+            cs.setInt(1, appointment_id);
+            cs.execute();
+            appointment_status_id = appointment_id;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "An error occured while doing the specified operation. Please try again.");
+        }
+    }
+    
+    public List<Appointment> get_according_to_status(int status)
+    {
+        try {
+            Connection conn = connect_to_db();
+            
+            if(conn == null)
+                return null;
+            CallableStatement cs = conn.prepareCall( "begin ? := appointments.get_according_to_status(?); end;" );
+            cs.setInt(2, status);
+            cs.registerOutParameter(1, OracleTypes.CURSOR);
+            cs.execute();
+            
+            ResultSet rs = (ResultSet)cs.getObject(1);
+            
+            List<Appointment> ap_list = new ArrayList<Appointment>();
+            int count = 0;
+            while(rs.next())
+            {
+                Appointment ap = new Appointment();
+                ap.setId(rs.getInt("id"));
+                ap.setDate_time(rs.getDate("date_time"));
+                ap.setDoctor_id(rs.getInt("doctor_id"));
+                ap.setPatient_id(rs.getInt("patient_id"));
+                ap.setReason(rs.getString("reason"));
+                ap.setAppointment_status_id(rs.getInt("appointment_status_id"));
+                ap_list.add(count, ap);
+                count++;
+            }
+            return ap_list;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "An error occured when fetching the data. Please try again.");
+            return null;
+        }
     }
     
     public void create_appointment(Appointment ap)
@@ -77,6 +140,7 @@ class Appointment {
                 ap.setDoctor_id(rs.getInt("doctor_id"));
                 ap.setPatient_id(rs.getInt("patient_id"));
                 ap.setReason(rs.getString("reason"));
+                ap.setAppointment_status_id(rs.getInt("appointment_status_id"));
                 ap_list.add(count, ap);
                 count++;
             }
@@ -112,6 +176,7 @@ class Appointment {
                 ap.setDoctor_id(rs.getInt("doctor_id"));
                 ap.setPatient_id(rs.getInt("patient_id"));
                 ap.setReason(rs.getString("reason"));
+                ap.setAppointment_status_id(rs.getInt("appointment_status_id"));
                 ap_list.add(count, ap);
                 count++;
             }
