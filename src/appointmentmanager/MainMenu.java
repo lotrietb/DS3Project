@@ -6,14 +6,18 @@
 
 package appointmentmanager;
 
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 /**
  *
  * @author Clive
  */
-public class MainMenu extends javax.swing.JFrame {
+public class MainMenu extends JFrame implements ActionListener {
 
     /**
-     * Creates new form MainMenu
+     * Creates new form AppointmentsDoctorsMainMenu
      */
     public MainMenu() {
         initComponents();
@@ -29,22 +33,22 @@ public class MainMenu extends javax.swing.JFrame {
     private void initComponents() {
 
         jMenu3 = new javax.swing.JMenu();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnPatient = new javax.swing.JButton();
+        btnDoctor = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
         jMenu3.setText("jMenu3");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jButton1.setText("Patient Reception");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnPatient.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/file.png"))); // NOI18N
+
+        btnDoctor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/doctor.png"))); // NOI18N
+        btnDoctor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnDoctorActionPerformed(evt);
             }
         });
-
-        jButton2.setText("Doctors Management");
 
         jLabel1.setText("Genesis Surgery");
 
@@ -59,9 +63,9 @@ public class MainMenu extends javax.swing.JFrame {
                         .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnPatient, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnDoctor, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(23, 23, 23))))
         );
         layout.setVerticalGroup(
@@ -71,21 +75,27 @@ public class MainMenu extends javax.swing.JFrame {
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(84, Short.MAX_VALUE))
+                    .addComponent(btnPatient, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnDoctor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(73, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
-
+    private void btnDoctorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDoctorActionPerformed
+        doctorApp();// TODO add your handling code here:
+    }//GEN-LAST:event_btnDoctorActionPerformed
+   
+ 
     /**
      * @param args the command line arguments
      */
+    public void doctorApp()
+    {
+        new MainMenu().setVisible(false);            
+        new DoctorsMainMenu().setVisible(true); 
+    }
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -119,9 +129,24 @@ public class MainMenu extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton btnDoctor;
+    private javax.swing.JButton btnPatient;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu3;
     // End of variables declaration//GEN-END:variables
+    
+    
+    
+    public void actionPerformed(ActionEvent e) {
+    btnDoctor.addActionListener(this);    
+    
+    btnDoctor.addActionListener(new ActionListener() 
+{
+    public void actionPerformed(java.awt.event.ActionEvent evt) {        
+        
+        doctorApp();// Main Form to show after the Login Form..
+    }
+});
+    }
 }
+
