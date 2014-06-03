@@ -14,7 +14,7 @@ import java.awt.event.ActionListener;
  *
  * @author Clive
  */
-public class MainMenu extends JFrame implements ActionListener {
+public class MainMenu extends JFrame {
 
     /**
      * Creates new form AppointmentsDoctorsMainMenu
@@ -39,9 +39,14 @@ public class MainMenu extends JFrame implements ActionListener {
 
         jMenu3.setText("jMenu3");
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         btnPatient.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/file.png"))); // NOI18N
+        btnPatient.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPatientActionPerformed(evt);
+            }
+        });
 
         btnDoctor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/doctor.png"))); // NOI18N
         btnDoctor.addActionListener(new java.awt.event.ActionListener() {
@@ -86,6 +91,11 @@ public class MainMenu extends JFrame implements ActionListener {
     private void btnDoctorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDoctorActionPerformed
         doctorApp();// TODO add your handling code here:
     }//GEN-LAST:event_btnDoctorActionPerformed
+
+    private void btnPatientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPatientActionPerformed
+        this.dispose();           
+        new AppointmentMainMenu().setVisible(true); 
+    }//GEN-LAST:event_btnPatientActionPerformed
    
  
     /**
@@ -93,8 +103,8 @@ public class MainMenu extends JFrame implements ActionListener {
      */
     public void doctorApp()
     {
-        new MainMenu().setVisible(false);            
-        new DoctorsMainMenu().setVisible(true); 
+        this.dispose();           
+        new DoctorMainMenu().setVisible(true); 
     }
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -134,19 +144,7 @@ public class MainMenu extends JFrame implements ActionListener {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu3;
     // End of variables declaration//GEN-END:variables
-    
-    
-    
-    public void actionPerformed(ActionEvent e) {
-    btnDoctor.addActionListener(this);    
-    
-    btnDoctor.addActionListener(new ActionListener() 
-{
-    public void actionPerformed(java.awt.event.ActionEvent evt) {        
-        
-        doctorApp();// Main Form to show after the Login Form..
+ 
     }
-});
-    }
-}
+
 
