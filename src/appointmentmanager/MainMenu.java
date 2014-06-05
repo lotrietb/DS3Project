@@ -42,6 +42,11 @@ public class MainMenu extends JFrame implements ActionListener {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         btnPatient.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/file.png"))); // NOI18N
+        btnPatient.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPatientActionPerformed(evt);
+            }
+        });
 
         btnDoctor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/doctor.png"))); // NOI18N
         btnDoctor.addActionListener(new java.awt.event.ActionListener() {
@@ -84,8 +89,15 @@ public class MainMenu extends JFrame implements ActionListener {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnDoctorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDoctorActionPerformed
-        doctorApp();// TODO add your handling code here:
+        DoctorsMainMenu frame2 = new DoctorsMainMenu();
+        frame2.setSize(300, 300);
+        frame2.setVisible(true);
+        //doctorApp();// TODO add your handling code here:
     }//GEN-LAST:event_btnDoctorActionPerformed
+
+    private void btnPatientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPatientActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnPatientActionPerformed
    
  
     /**

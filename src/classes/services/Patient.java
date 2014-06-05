@@ -120,6 +120,42 @@ public class Patient {
         }
     }
     
+    public List<Patient> get_all_patients()
+    {
+        try {
+            Connection conn = connect_to_db();
+            
+            if(conn == null)
+                return null;
+            CallableStatement cs = conn.prepareCall( "begin ? := patients.get_all; end;" );
+            
+            cs.registerOutParameter(1, OracleTypes.CURSOR);
+            cs.execute();
+            
+            ResultSet rs = (ResultSet)cs.getObject(1);
+            
+            List<Patient> patient_list = new ArrayList<Patient>();
+            int count = 0;
+            while(rs.next())
+            {
+                Patient patient = new Patient();
+                patient.setId(rs.getInt("id"));
+                patient.setAddress(rs.getString("address"));
+                patient.setCity(rs.getString("City"));
+                patient.setId_number(rs.getString("id_number"));
+                patient.setName(rs.getString("name"));
+                patient.setSurname(rs.getString("surname"));
+                patient_list.add(count, patient);
+                count++;
+            }
+            return patient_list;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "An error occured when fetching the data. Please try again.");
+            return null;
+        }
+    }
+    
     public int monthly_owing(int patient_id)
     {
         

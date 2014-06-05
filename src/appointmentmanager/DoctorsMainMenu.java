@@ -11,7 +11,7 @@ package appointmentmanager;
  * @author Clive
  */
 
-public class DoctorsMainMenu extends javax.swing.JPanel {
+public class DoctorsMainMenu extends javax.swing.JFrame {
 
     /**
      * Creates new form MainMenu

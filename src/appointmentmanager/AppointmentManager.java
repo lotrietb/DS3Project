@@ -6,6 +6,9 @@
 
 package appointmentmanager;
 
+import classes.services.Patient;
+import java.util.List;
+
 /**
  *
  * @author Clive
@@ -19,6 +22,8 @@ public class AppointmentManager {
         // TODO code application logic here
         java.awt.EventQueue.invokeLater(new Runnable() {
               public void run() {
+                   Patient p = new Patient();
+                   List<Patient> pat_list = p.get_all_patients();
                    MainMenu frame = new MainMenu();
                    frame.setVisible(true);
               }
