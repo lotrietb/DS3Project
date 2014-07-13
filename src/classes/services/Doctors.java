@@ -11,9 +11,11 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import oracle.jdbc.OracleTypes;
 
 /**
@@ -79,6 +81,9 @@ public class Doctors {
                 ap.setPatient_id(rs.getInt("patient_id"));
                 ap.setReason(rs.getString("reason"));
                 ap.setAppointment_status_id(rs.getInt("appointment_status_id"));
+                ap.setPatName(rs.getString("name"));
+                ap.setPatSurname(rs.getString("surname"));
+                ap.setStatus(rs.getString("status"));
                 ap_list.add(count, ap);
                 count++;
             }
@@ -119,6 +124,36 @@ public class Doctors {
             cs.execute();
             
             ResultSet rs = (ResultSet)cs.getObject(1);
+            
+            List<Doctors> doc_list = new ArrayList<Doctors>();
+            while(rs.next())
+            {
+                Doctors doc = new Doctors();
+                doc.setId(rs.getInt("id"));
+                doc.setIs_available(rs.getInt("is_available"));
+                doc.setName(rs.getString("name"));
+                doc.setSurname(rs.getString("surname"));
+                     
+                doc_list.add(doc);
+            }
+            return doc_list;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "An error occured when fetching the data. Please try again.");
+            return null;
+        }
+    }
+    
+    public List<Doctors> all_doctors()
+    {
+        try {
+            Connection conn = connect_to_db();
+            
+            if(conn == null)
+                return null;
+            Statement stat = conn.createStatement();
+            
+            ResultSet rs = stat.executeQuery("SELECT * FROM doctor ORDER BY name");
             
             List<Doctors> doc_list = new ArrayList<Doctors>();
             while(rs.next())

@@ -21,13 +21,25 @@ import oracle.jdbc.OracleTypes;
  *
  * @author Brandon1
  */
-class Appointment {
+public class Appointment {
     private int id;
     private Date date_time;
     private String reason;
     private int doctor_id;
     private int patient_id;
     private int appointment_status_id;
+    private String patName;
+    private String patSurname;
+    
+    private String status;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     public int getAppointment_status_id() {
         return appointment_status_id;
@@ -49,6 +61,12 @@ class Appointment {
     
     public void set_status(int appointment_id, int new_status)
     {
+        /*
+            Available Statuses
+            1: Incomplete
+            2: Consultation Started
+            3: Complete
+        */
         try {
             Connection conn = connect_to_db();
             
@@ -88,6 +106,8 @@ class Appointment {
                 ap.setPatient_id(rs.getInt("patient_id"));
                 ap.setReason(rs.getString("reason"));
                 ap.setAppointment_status_id(rs.getInt("appointment_status_id"));
+                ap.setPatName(rs.getString("name"));
+                ap.setPatSurname(rs.getString("surname"));
                 ap_list.add(count, ap);
                 count++;
             }
@@ -99,7 +119,7 @@ class Appointment {
         }
     }
     
-    public void create_appointment(Appointment ap)
+    public int create_appointment(Appointment ap)
     {
         try {
             Connection conn = connect_to_db();
@@ -110,10 +130,17 @@ class Appointment {
             cs.setInt(3, ap.getDoctor_id());
             cs.setInt(4, ap.getPatient_id());
             cs.execute();
+            return 1;
         } catch (SQLException ex) {
             ex.printStackTrace();
+            if(ex.getErrorCode() == 2291)
+            {
+                JOptionPane.showMessageDialog(null, "The patient was not found");
+                return 2291;
+            }
             JOptionPane.showMessageDialog(null, "An error occured while creating the appointment. Please try again.");            
         }
+        return 1;
     }
     
     public List<Appointment> all_appointments()
@@ -141,6 +168,8 @@ class Appointment {
                 ap.setPatient_id(rs.getInt("patient_id"));
                 ap.setReason(rs.getString("reason"));
                 ap.setAppointment_status_id(rs.getInt("appointment_status_id"));
+                ap.setPatName(rs.getString("name"));
+                ap.setPatSurname(rs.getString("surname"));
                 ap_list.add(count, ap);
                 count++;
             }
@@ -177,6 +206,9 @@ class Appointment {
                 ap.setPatient_id(rs.getInt("patient_id"));
                 ap.setReason(rs.getString("reason"));
                 ap.setAppointment_status_id(rs.getInt("appointment_status_id"));
+                ap.setPatName(rs.getString("name"));
+                ap.setPatSurname(rs.getString("surname"));
+                ap.setStatus(rs.getString("status"));
                 ap_list.add(count, ap);
                 count++;
             }
@@ -226,6 +258,22 @@ class Appointment {
 
     public void setPatient_id(int patient_id) {
         this.patient_id = patient_id;
+    }
+
+    public String getPatName() {
+        return patName;
+    }
+
+    public void setPatName(String patName) {
+        this.patName = patName;
+    }
+
+    public String getPatSurname() {
+        return patSurname;
+    }
+
+    public void setPatSurname(String patSurname) {
+        this.patSurname = patSurname;
     }
     
     

@@ -11,6 +11,7 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -74,10 +75,36 @@ public class Patient {
             cs.setString(5,pat.getId_number());
             
             cs.execute();
+            System.out.println("Added patient");
         } catch (SQLException ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(null, "An error occured while creating the doctor. Please try again.");            
+            JOptionPane.showMessageDialog(null, "An error occured while creating the patient. Please try again.");            
         }
+    }
+    
+    public Patient get_by_id_number(String id_number)
+    {
+        try {
+            Connection conn = connect_to_db();
+            
+            Statement stat = conn.createStatement();
+            
+            ResultSet rs = stat.executeQuery("SELECT * FROM patient WHERE id_number = "+id_number);
+            Patient p = new Patient();
+            while(rs.next())
+            {
+                p.setName(rs.getString("name"));
+                p.setSurname(rs.getString("surname"));
+                p.setCity(rs.getString("city"));
+                p.setId_number(id_number);
+                p.setId(rs.getInt("id"));
+            }
+            return p;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "An error occured while searching for the patient. Please try again.");            
+        }
+        return null;
     }
     
     /*
